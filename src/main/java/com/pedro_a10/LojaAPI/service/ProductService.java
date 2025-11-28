@@ -23,8 +23,8 @@ public class ProductService {
     return productRepository.findByName(name);
   }
 
-  public List<Product> ListAllByName(String name) {
-    return productRepository.ListAllByName(name);
+  public List<Product> listByPriceInCents(Integer priceInCents) {
+    return productRepository.listByPrice(priceInCents);
   }
 
   public List<Product> ListAllByType(ProductType type) {

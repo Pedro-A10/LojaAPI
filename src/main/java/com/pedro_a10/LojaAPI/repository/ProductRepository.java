@@ -13,7 +13,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
   Optional<Product> findByName(String name);
 
-  List<Product> ListAllByName(String name);
+  List<Product> listByPrice(Integer priceInCents);
 
   List<Product> ListAllByType(ProductType type);
 }
