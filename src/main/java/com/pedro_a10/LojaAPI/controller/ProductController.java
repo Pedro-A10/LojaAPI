@@ -42,21 +42,13 @@ public class ProductController {
 
   @PostMapping
   public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody @Valid ProductRequestDTO productRequestDTO) {
-    try {
       ProductResponseDTO newProduct = productService.createProduct(productRequestDTO);
       return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
-    }catch (ProductNotFoundException e) {
-      return ResponseEntity.notFound().build();
-    }
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-    try {
       productService.deleteById(id);
       return ResponseEntity.noContent().build();
-    }catch (ProductNotFoundException e) {
-      return ResponseEntity.notFound().build();
-    }
   }
 }

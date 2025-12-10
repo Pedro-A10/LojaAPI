@@ -31,13 +31,13 @@ public class UserService {
 
   public UserResponseDTO findById(Long id) {
     User user = userRepository.findById(id)
-      .orElseThrow(() -> new UserNotFoundException("User not found with id" + id));
+      .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     return userMapper.toResponseDTO(user);
   }
 
   public UserResponseDTO findByCpf(String cpf) {
     User user = userRepository.findByCpf(cpf)
-      .orElseThrow(() -> new UserCpfNotFoundException("User not found with cpf" + cpf));
+      .orElseThrow(() -> new UserCpfNotFoundException("User not found with cpf: " + cpf));
     return userMapper.toResponseDTO(user);
   }
 
@@ -62,7 +62,7 @@ public class UserService {
 
   public void deleteById(Long id) {
     if (!userRepository.existsById(id)) {
-      throw new UserNotFoundException("User not found with id " + id);
+      throw new UserNotFoundException("User not found with id: " + id);
     }
     userRepository.deleteById(id);
   }

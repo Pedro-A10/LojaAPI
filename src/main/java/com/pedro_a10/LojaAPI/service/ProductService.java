@@ -44,7 +44,7 @@ public class ProductService {
 
   public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
     if (productRequestDTO.getQuantity() <= 0){
-      throw new ProductInvalidQuantityException("Is not possible create products with 0 or below quantity" + productRequestDTO.getQuantity());
+      throw new ProductInvalidQuantityException("Is not possible create products with 0 or below quantity: " + productRequestDTO.getQuantity());
     }
 
     Product products = productMapper.toEntity(productRequestDTO);
@@ -54,7 +54,7 @@ public class ProductService {
 
   public void deleteById(Long id) {
     if (!productRepository.existsById(id)) {
-      throw new ProductNotFoundException("Product not found with id " + id);
+      throw new ProductNotFoundException("Product not found with id: " + id);
     }
     productRepository.deleteById(id);
   }

@@ -41,21 +41,13 @@ public class UserController {
 
   @PostMapping
   public ResponseEntity<UserResponseDTO> createUser (@RequestBody @Valid UserRequestDTO userRequestDTO) {
-   try {
-     UserResponseDTO newUser = userService.createUser(userRequestDTO);
-      return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-   }catch (UserNotFoundException e) {
-    return ResponseEntity.badRequest().build();
-   }
+    UserResponseDTO newUser = userService.createUser(userRequestDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-    try {
-      userService.deleteById(id);
-      return ResponseEntity.noContent().build();
-    }catch (UserNotFoundException e) {
-      return ResponseEntity.notFound().build();
-    }
+    userService.deleteById(id);
+    return ResponseEntity.noContent().build();
   }
 }
