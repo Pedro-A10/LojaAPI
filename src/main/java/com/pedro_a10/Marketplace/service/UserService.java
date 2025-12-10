@@ -46,6 +46,11 @@ public class UserService {
     return userMapper.toResponseDTOList(userRepository.findUserEmployee());
   }
 
+  public User getUserByUsernameOrThrow(String username) {
+    return userRepository.findByUsername(username)
+      .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+  }
+
   public UserResponseDTO createUser(UserRequestDTO userRequestDTO){
     if (userRepository.existsByEmail(userRequestDTO.getEmail())) {
       throw new EmailAlreadyExistsException("Email already exists: " + userRequestDTO.getEmail());
