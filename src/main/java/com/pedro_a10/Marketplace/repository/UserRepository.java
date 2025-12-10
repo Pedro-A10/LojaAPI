@@ -22,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   @Query("SELECT u FROM User u WHERE u.isEmployee = true")
   List<User> findUserEmployee();
+
+  Optional<User> findByUsername(String username);
 }

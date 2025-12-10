@@ -1,22 +1,41 @@
 package com.pedro_a10.Marketplace.service;
 
-import org.springframework.security.core.userdetails.User;
+import com.pedro_a10.Marketplace.entity.User;
+import com.pedro_a10.Marketplace.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
+
+  private final UserRepository userRepository;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    if (username.equals("ADMIN")) {
-      return User.withUsername("ADMIN")
-        .password("$2a$10$R8o7LZtIu/jBzDywH1iVmeJhHaRzFvA1UhV4vXZ6JoWUPTtHuR8Ba")
-        .roles("ADMIN")
-        .build();
+    // search user in db
+    User user = userRepository.findByUsername(username)
+      .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+    // roles
+    List<String> roles = new ArrayList<>();
+    roles.add("CLIENT"); // ALL USER IS CLIENTS
+    if (user.isEmployee()) {
+      roles.add("EMPLOYEE"); // Employee is Client
     }
-    throw new UsernameNotFoundException("User not found: " + username);
+
+    // create UserDetails for Spring Security
+    return org.springframework.security.core.userdetails.User.builder()
+      .username(user.getUsername())
+      .password(user.getPassword())
+      .roles(roles.toArray(new String[0]))
+      .build();
   }
 }
