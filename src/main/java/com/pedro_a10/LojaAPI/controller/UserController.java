@@ -1,15 +1,16 @@
 package com.pedro_a10.LojaAPI.controller;
 
-import com.pedro_a10.LojaAPI.entity.User;
+import com.pedro_a10.LojaAPI.dto.userdto.UserRequestDTO;
+import com.pedro_a10.LojaAPI.dto.userdto.UserResponseDTO;
+import com.pedro_a10.LojaAPI.exceptions.UserNotFoundException;
 import com.pedro_a10.LojaAPI.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/users")
@@ -19,38 +20,42 @@ public class UserController {
   UserService userService;
 
   @GetMapping("/{id}")
-  public Optional<User> findById(@PathVariable Long id) {
-    return userService.findById(id);
+  public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
+    return ResponseEntity.ok(userService.findById(id));
   }
 
   @GetMapping("/cpf")
-  public Optional<User> findByCpf(@RequestParam String cpf) {
-    return userService.findByCpf(cpf);
-  }
-
-  @GetMapping("/exists")
-  public ResponseEntity<Boolean> existsByEmail(@RequestParam String email) {
-    boolean exists = userService.existsByEmail(email);
-    return ResponseEntity.ok(exists);
+  public ResponseEntity<UserResponseDTO> findByCpf(@RequestParam String cpf) {
+    return ResponseEntity.ok(userService.findByCpf(cpf));
   }
 
   @GetMapping("/clients")
-  public List<User> getAllClients() {
-    return userService.getAllClients();
+  public ResponseEntity<List<UserResponseDTO>> getAllClients() {
+    return ResponseEntity.ok(userService.getAllClients());
   }
 
   @GetMapping("/employees")
-  public List<User> getAllEmployees() {
-    return userService.getAllEmployees();
+  public ResponseEntity<List<UserResponseDTO>> getAllEmployees() {
+    return ResponseEntity.ok(userService.getAllEmployees());
   }
 
   @PostMapping
-  public User createUser (@RequestBody @Valid User user) {
-    return userService.createUser(user);
+  public ResponseEntity<UserResponseDTO> createUser (@RequestBody @Valid UserRequestDTO userRequestDTO) {
+   try {
+     UserResponseDTO newUser = userService.createUser(userRequestDTO);
+      return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+   }catch (UserNotFoundException e) {
+    return ResponseEntity.badRequest().build();
+   }
   }
 
   @DeleteMapping("/{id}")
-  public void deleteById(@PathVariable Long id) {
-    userService.deleteById(id);
+  public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    try {
+      userService.deleteById(id);
+      return ResponseEntity.noContent().build();
+    }catch (UserNotFoundException e) {
+      return ResponseEntity.notFound().build();
+    }
   }
 }
